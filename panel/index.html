@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North Store — لوحة الأوامر</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&family=DM+Mono:wght@400;500&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #080808;
+  --bg2:       #0e0e0e;
+  --bg3:       #141414;
+  --surface:   #111111;
+  --surface2:  #1a1a1a;
+  --border:    rgba(200,200,200,0.08);
+  --border2:   rgba(200,200,200,0.18);
+  --silver:    #c8c8c8;
+  --silver2:   #e8e8e8;
+  --silver3:   #f5f5f5;
+  --dim:       #666666;
+  --dim2:      #404040;
+  --gold:      #d4a853;
+  --green:     #5adb8a;
+  --red:       #e05555;
+  --blue:      #5599ff;
+  --purple:    #9966ff;
+  --orange:    #e08840;
+  --text:      #e8e8e8;
+  --text2:     #999999;
+  --text3:     #555555;
+  --glow:      0 0 30px rgba(200,200,200,0.08);
+  --glow2:     0 0 60px rgba(200,200,200,0.04);
+  --crack:     rgba(255,255,255,0.06);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-weight: 700;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.012) 50%, transparent 60%),
+    linear-gradient(45deg,  transparent 30%, rgba(255,255,255,0.008) 40%, transparent 50%),
+    linear-gradient(90deg,  rgba(255,255,255,0.005) 1px, transparent 1px),
+    linear-gradient(0deg,   rgba(255,255,255,0.005) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 80px 80px, 80px 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb1 {
+  position: fixed;
+  top: -300px; right: -300px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(180,180,180,0.04) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+  animation: orbFloat1 12s ease-in-out infinite;
+}
+.orb2 {
+  position: fixed;
+  bottom: -300px; left: -300px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(150,150,150,0.03) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+  animation: orbFloat2 16s ease-in-out infinite;
+}
+.orb3 {
+  position: fixed;
+  top: 50%; left: 40%;
+  transform: translate(-50%, -50%);
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(212,168,83,0.02) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+  animation: orbFloat3 20s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,40px)} }
+@keyframes orbFloat2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-30px)} }
+@keyframes orbFloat3 { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,-48%)} }
+
+/* ══════════ SIDEBAR ══════════ */
+.sidebar {
+  position: fixed;
+  right: 0; top: 0; bottom: 0;
+  width: 265px;
+  background: linear-gradient(180deg, #0c0c0c 0%, #080808 100%);
+  border-left: 1px solid var(--border2);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg,
+    transparent 0%, rgba(255,255,255,0.3) 30%,
+    rgba(212,168,83,0.4) 50%, rgba(255,255,255,0.3) 70%, transparent 100%);
+  animation: borderShimmer 4s ease-in-out infinite;
+}
+@keyframes borderShimmer {
+  0%,100% { opacity: 0.3; } 50% { opacity: 1; }
+}
+
+.sidebar-logo {
+  padding: 28px 20px 22px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  text-align: center;
+  position: relative;
+}
+.logo-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.logo-compass {
+  width: 32px; height: 32px;
+  filter: drop-shadow(0 0 8px rgba(212,168,83,0.6));
+  animation: compassGlow 3s ease-in-out infinite;
+}
+@keyframes compassGlow {
+  0%,100% { filter: drop-shadow(0 0 6px rgba(212,168,83,0.5)); }
+  50%      { filter: drop-shadow(0 0 14px rgba(212,168,83,0.9)); }
+}
+.logo-title {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, #f0f0f0 0%, #c8c8c8 40%, #d4a853 60%, #e8e8e8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.logo-sub {
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+}
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.nav-section-label {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: var(--dim2);
+  text-transform: uppercase;
+  padding: 14px 12px 6px;
+  text-align: right;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text2);
+  border: 1px solid transparent;
+  margin-bottom: 2px;
+  position: relative;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+.nav-item:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--silver2);
+  border-color: var(--border);
+  transform: translateX(-2px);
+}
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(212,168,83,0.1) 0%, rgba(255,255,255,0.04) 100%);
+  color: var(--silver3);
+  border-color: rgba(212,168,83,0.25);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  right: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 65%;
+  background: linear-gradient(180deg, var(--gold), var(--silver2));
+  border-radius: 2px 0 0 2px;
+}
+.nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-badge {
+  margin-right: auto;
+  background: rgba(255,255,255,0.06);
+  color: var(--dim);
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  padding: 2px 6px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.nav-item.active .nav-badge {
+  background: rgba(212,168,83,0.12);
+  color: var(--gold);
+  border-color: rgba(212,168,83,0.2);
+}
+.sidebar-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  text-align: right;
+}
+.credit {
+  font-size: 10px;
+  color: var(--dim2);
+  font-family: 'DM Mono', monospace;
+  line-height: 1.7;
+}
+.credit span { color: var(--gold); }
+
+/* ══════════ MAIN ══════════ */
+.main {
+  margin-right: 265px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(8,8,8,0.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 50;
+  flex-direction: row-reverse;
+}
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212,168,83,0.4) 30%, rgba(255,255,255,0.3) 50%, rgba(212,168,83,0.4) 70%, transparent 100%);
+  animation: topbarLine 5s linear infinite;
+  background-size: 200% 100%;
+}
+@keyframes topbarLine {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.page-title {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: var(--silver3);
+}
+.page-subtitle {
+  font-size: 11px;
+  color: var(--dim2);
+  font-family: 'DM Mono', monospace;
+  margin-right: auto;
+  letter-spacing: 1px;
+}
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 7px 14px;
+  transition: border-color 0.2s;
+}
+.search-box:focus-within {
+  border-color: rgba(212,168,83,0.4);
+  box-shadow: 0 0 0 2px rgba(212,168,83,0.06);
+}
+.search-box input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  width: 180px;
+  direction: rtl;
+}
+.search-box input::placeholder { color: var(--text3); }
+.search-icon { color: var(--dim2); font-size: 13px; }
+
+/* ══════════ CONTENT ══════════ */
+.content { padding: 32px; }
+.section { display: none; }
+.section.active {
+  display: block;
+  animation: sectionIn 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes sectionIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.section-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  position: relative;
+}
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; right: 0;
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+.section-header h2 {
+  font-size: 26px;
+  font-weight: 900;
+  margin-bottom: 6px;
+  color: var(--silver3);
+}
+.section-header p {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.8;
+  font-weight: 700;
+}
+
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s;
+  text-align: right;
+  cursor: default;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color, var(--silver)), transparent);
+  opacity: 0.6;
+}
+.stat-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 60%);
+  pointer-events: none;
+}
+.stat-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), var(--glow);
+}
+.stat-label { font-size: 10px; color: var(--text3); font-weight: 900; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+.stat-value { font-size: 30px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+.stat-sub   { font-size: 11px; color: var(--text2); margin-top: 6px; font-weight: 700; }
+
+/* ── QUICK GRID ── */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.quick-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.25s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.quick-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.quick-card:hover {
+  border-color: rgba(212,168,83,0.3);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(212,168,83,0.06);
+  transform: translateY(-3px);
+}
+.quick-card:hover::before { opacity: 1; }
+.quick-icon  { font-size: 28px; margin-bottom: 10px; }
+.quick-name  { font-size: 14px; font-weight: 900; margin-bottom: 4px; color: var(--silver2); }
+.quick-count { font-size: 11px; color: var(--text3); font-family: 'DM Mono', monospace; }
+
+/* ── CMD GROUP ── */
+.cmd-group { margin-bottom: 30px; }
+.group-title {
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row-reverse;
+}
+.group-title::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+}
+.group-line {
+  width: 14px; height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--silver));
+  border-radius: 1px;
+}
+
+/* ── CMD GRID & CARD ── */
+.cmd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 10px;
+}
+.cmd-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 15px 16px;
+  transition: all 0.2s;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  text-align: right;
+}
+.cmd-card::before {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--card-color, var(--silver));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.cmd-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.015) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.cmd-card:hover {
+  border-color: var(--border2);
+  background: var(--surface2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.cmd-card:hover::before { opacity: 1; }
+.cmd-card:hover::after  { opacity: 1; }
+
+.cmd-name {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--silver2);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  direction: ltr;
+  text-align: left;
+}
+.cmd-slash { color: var(--gold); font-weight: 400; }
+.cmd-arg {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+.cmd-arg.req { color: var(--silver2); border-color: rgba(212,168,83,0.2); background: rgba(212,168,83,0.05); }
+.cmd-desc {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.65;
+  font-weight: 700;
+}
+.cmd-perm {
+  display: inline-block;
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  padding: 2px 7px;
+  border-radius: 3px;
+  margin-top: 7px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.perm-admin { background: rgba(212,168,83,0.08); color: var(--gold);  border: 1px solid rgba(212,168,83,0.2); }
+.perm-mod   { background: rgba(200,200,200,0.06); color: var(--silver); border: 1px solid var(--border2); }
+.perm-all   { background: rgba(90,219,138,0.07);  color: var(--green); border: 1px solid rgba(90,219,138,0.2); }
+
+/* ── HIGHLIGHT BOX ── */
+.highlight-box {
+  background: linear-gradient(135deg, rgba(212,168,83,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(212,168,83,0.2);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-direction: row-reverse;
+  text-align: right;
+  position: relative;
+  overflow: hidden;
+}
+.highlight-box::before {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--gold), transparent);
+}
+.highlight-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.highlight-text h4 { font-size: 13px; font-weight: 900; margin-bottom: 4px; color: var(--silver3); }
+.highlight-text p  { font-size: 12px; color: var(--text2); line-height: 1.7; font-weight: 700; }
+
+/* ── SETUP ── */
+.setup-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.setup-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px;
+  transition: border-color 0.2s;
+  text-align: right;
+  position: relative;
+  overflow: hidden;
+}
+.setup-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.015) 0%, transparent 50%);
+  pointer-events: none;
+}
+.setup-card:hover { border-color: rgba(212,168,83,0.25); }
+.setup-card h3 {
+  font-size: 14px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row-reverse;
+  color: var(--silver2);
+}
+.setup-step-num {
+  width: 26px; height: 26px;
+  background: linear-gradient(135deg, var(--gold), #a07830);
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+.setup-card p {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.8;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.code-snippet {
+  background: #050505;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--silver2);
+  line-height: 1.9;
+  overflow-x: auto;
+  direction: ltr;
+  text-align: left;
+}
+.code-snippet .comment { color: var(--dim2); }
+.code-snippet .key     { color: var(--gold); }
+.code-snippet .val     { color: var(--green); }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-block;
+  font-size: 9px;
+  font-family: 'DM Mono', monospace;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+.tag-cooldown { background: rgba(150,100,255,0.1); color: #aa88ff; border: 1px solid rgba(150,100,255,0.2); }
+.tag-new      { background: rgba(90,219,138,0.08); color: var(--green); border: 1px solid rgba(90,219,138,0.2); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dim2); }
+
+/* ══════════════════════════════════════
+   COPY BUTTON
+══════════════════════════════════════ */
+.copy-btn {
+  position: absolute;
+  /* sits in top-left corner (LTR visual = left edge of card) */
+  top: 8px;
+  left: 8px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  /* hidden by default, shown on card hover */
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.18s, transform 0.18s, background 0.18s, border-color 0.18s;
+  z-index: 20;
+}
+.copy-btn svg {
+  width: 12px; height: 12px;
+  stroke: var(--dim);
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.18s;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+/* appear on card hover */
+.cmd-card:hover .copy-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+/* button hover */
+.copy-btn:hover {
+  background: rgba(212,168,83,0.12);
+  border-color: rgba(212,168,83,0.4);
+  box-shadow: 0 0 10px rgba(212,168,83,0.18);
+}
+.copy-btn:hover svg { stroke: var(--gold); }
+/* copied state */
+.copy-btn.copied {
+  opacity: 1;
+  transform: scale(1);
+  background: rgba(90,219,138,0.1);
+  border-color: rgba(90,219,138,0.4);
+  box-shadow: 0 0 10px rgba(90,219,138,0.15);
+}
+.copy-btn.copied svg { stroke: var(--green); }
+/* tooltip */
+.copy-btn::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1c1c1c;
+  color: var(--silver2);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.copy-btn:hover::after  { opacity: 1; }
+.copy-btn.copied::after { opacity: 1; color: var(--green); }
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .sidebar { width: 56px; }
+  .sidebar-logo div:not(.logo-icon-wrapper), .nav-item span:not(.nav-icon), .nav-badge, .sidebar-footer { display: none; }
+  .main { margin-right: 56px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .setup-grid { grid-template-columns: 1fr; }
+  .quick-grid { grid-template-columns: repeat(2, 1fr); }
+  .cmd-grid { grid-template-columns: 1fr; }
+}
+.compass-svg { width: 28px; height: 28px; }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div class="orb1"></div>
+<div class="orb2"></div>
+<div class="orb3"></div>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon-wrapper">
+      <svg class="logo-compass compass-svg" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 8 L38 42 L30 36 L22 42 Z" fill="url(#g1)" opacity="0.95"/>
+        <path d="M30 52 L22 18 L30 24 L38 18 Z" fill="rgba(255,255,255,0.15)"/>
+        <circle cx="30" cy="30" r="3" fill="url(#g1)"/>
+        <defs>
+          <linearGradient id="g1" x1="22" y1="8" x2="38" y2="42" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#f5f0e0"/>
+            <stop offset="50%" stop-color="#d4a853"/>
+            <stop offset="100%" stop-color="#a07830"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="logo-title">NORTH</div>
+    </div>
+    <div class="logo-sub">Command Panel · v1.0</div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section-label">عام</div>
+    <div class="nav-item active" onclick="show('overview', this)">
+      <span class="nav-icon">⚡</span><span>لوحة التحكم</span>
+    </div>
+    <div class="nav-item" onclick="show('setup', this)">
+      <span class="nav-icon">🚀</span><span>دليل الإعداد</span>
+    </div>
+
+    <div class="nav-section-label">الوحدات</div>
+    <div class="nav-item" onclick="show('moderation', this)">
+      <span class="nav-icon">🛡️</span><span>الإشراف</span><span class="nav-badge">19</span>
+    </div>
+    <div class="nav-item" onclick="show('economy', this)">
+      <span class="nav-icon">💰</span><span>الاقتصاد</span><span class="nav-badge">22</span>
+    </div>
+    <div class="nav-item" onclick="show('music', this)">
+      <span class="nav-icon">🎵</span><span>الموسيقى</span><span class="nav-badge">17</span>
+    </div>
+    <div class="nav-item" onclick="show('leveling', this)">
+      <span class="nav-icon">⭐</span><span>المستويات</span><span class="nav-badge">9</span>
+    </div>
+    <div class="nav-item" onclick="show('voice', this)">
+      <span class="nav-icon">🎙️</span><span>تتبع الصوت</span><span class="nav-badge">10</span>
+    </div>
+    <div class="nav-item" onclick="show('tickets', this)">
+      <span class="nav-icon">🎫</span><span>التذاكر</span><span class="nav-badge">10</span>
+    </div>
+    <div class="nav-item" onclick="show('giveaways', this)">
+      <span class="nav-icon">🎉</span><span>السحوبات</span><span class="nav-badge">5</span>
+    </div>
+    <div class="nav-item" onclick="show('fun', this)">
+      <span class="nav-icon">🎮</span><span>الترفيه والألعاب</span><span class="nav-badge">23</span>
+    </div>
+    <div class="nav-item" onclick="show('utility', this)">
+      <span class="nav-icon">🔧</span><span>الأدوات</span><span class="nav-badge">21</span>
+    </div>
+
+    <div class="nav-section-label">إعداد السيرفر</div>
+    <div class="nav-item" onclick="show('logging', this)">
+      <span class="nav-icon">📋</span><span>السجلات</span><span class="nav-badge">5</span>
+    </div>
+    <div class="nav-item" onclick="show('welcome', this)">
+      <span class="nav-icon">👋</span><span>الترحيب / المغادرة</span><span class="nav-badge">7</span>
+    </div>
+    <div class="nav-item" onclick="show('automod', this)">
+      <span class="nav-icon">🤖</span><span>الإشراف التلقائي</span><span class="nav-badge">14</span>
+    </div>
+    <div class="nav-item" onclick="show('roles', this)">
+      <span class="nav-icon">🏷️</span><span>رتب التفاعل</span><span class="nav-badge">5</span>
+    </div>
+    <div class="nav-item" onclick="show('announcements', this)">
+      <span class="nav-icon">📣</span><span>الإعلانات</span><span class="nav-badge">3</span>
+    </div>
+    <div class="nav-item" onclick="show('admin', this)">
+      <span class="nav-icon">⚙️</span><span>إعدادات الأدمن</span><span class="nav-badge">6</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="credit">طُوِّر بواسطة <span>Rayy @qwxlr</span><br>North Store · v1.0.0</div>
+  </div>
+</nav>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">لوحة التحكم</div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="ابحث عن أمر..." oninput="searchCmds(this.value)">
+    </div>
+    <div class="page-subtitle">NORTH STORE · ALL-IN-ONE BOT</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="section active" id="s-overview">
+      <div class="section-header">
+        <h2>⚡ لوحة التحكم</h2>
+        <p>مرحباً بك في لوحة أوامر نورث بوت. تصفّح أكثر من 480 أمراً موزّعة على 15 وحدة.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card" style="--accent-color:var(--silver)">
+          <div class="stat-label">إجمالي الأوامر</div>
+          <div class="stat-value" style="color:var(--silver3)">480+</div>
+          <div class="stat-sub">في جميع الوحدات</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--gold)">
+          <div class="stat-label">الوحدات</div>
+          <div class="stat-value" style="color:var(--gold)">15</div>
+          <div class="stat-sub">يمكن تفعيل كل منها بشكل مستقل</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--green)">
+          <div class="stat-label">ألعاب الاقتصاد</div>
+          <div class="stat-value" style="color:var(--green)">8</div>
+          <div class="stat-sub">سلوتس، بلاك جاك، سطو وأكثر</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--silver)">
+          <div class="stat-label">قاعدة البيانات</div>
+          <div class="stat-value" style="color:var(--silver2);font-size:22px">SQLite</div>
+          <div class="stat-sub">25+ جدول، بدون إعداد مسبق</div>
+        </div>
+      </div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="show('moderation', document.querySelector('[onclick*=moderation]'))"><div class="quick-icon">🛡️</div><div class="quick-name">الإشراف</div><div class="quick-count">19 أمر</div></div>
+        <div class="quick-card" onclick="show('economy', document.querySelector('[onclick*=economy]'))"><div class="quick-icon">💰</div><div class="quick-name">الاقتصاد</div><div class="quick-count">22 أمر</div></div>
+        <div class="quick-card" onclick="show('music', document.querySelector('[onclick*=music]'))"><div class="quick-icon">🎵</div><div class="quick-name">الموسيقى</div><div class="quick-count">17 أمر</div></div>
+        <div class="quick-card" onclick="show('leveling', document.querySelector('[onclick*=leveling]'))"><div class="quick-icon">⭐</div><div class="quick-name">المستويات</div><div class="quick-count">9 أوامر</div></div>
+        <div class="quick-card" onclick="show('fun', document.querySelector('[onclick*=fun]'))"><div class="quick-icon">🎮</div><div class="quick-name">الترفيه والألعاب</div><div class="quick-count">23 أمر</div></div>
+        <div class="quick-card" onclick="show('utility', document.querySelector('[onclick*=utility]'))"><div class="quick-icon">🔧</div><div class="quick-name">الأدوات</div><div class="quick-count">21 أمر</div></div>
+      </div>
+      <div class="highlight-box">
+        <div class="highlight-icon">💡</div>
+        <div class="highlight-text">
+          <h4>أول مرة؟ ابدأ بدليل الإعداد</h4>
+          <p>انقر على "دليل الإعداد" في القائمة الجانبية للمرور بخطوات تفعيل الصلاحيات، وإعداد ملف .env، ونشر الأوامر، وإعداد كل وحدة خطوة بخطوة.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SETUP ══ -->
+    <div class="section" id="s-setup">
+      <div class="section-header">
+        <h2>🚀 دليل الإعداد</h2>
+        <p>اتّبع هذه الخطوات لإعداد نورث بوت بالكامل في سيرفرك.</p>
+      </div>
+      <div class="setup-grid">
+        <div class="setup-card">
+          <h3><div class="setup-step-num">1</div> تفعيل الصلاحيات الخاصة</h3>
+          <p>اذهب إلى discord.com/developers/applications ← اختر البوت ← تبويب Bot ← فعّل الثلاثة في Privileged Gateway Intents.</p>
+          <div class="code-snippet">✅ Presence Intent<br>✅ Server Members Intent<br>✅ Message Content Intent</div>
+        </div>
+        <div class="setup-card">
+          <h3><div class="setup-step-num">2</div> إعداد ملف .env</h3>
+          <p>افتح <code style="font-family:'DM Mono';font-size:11px;color:var(--gold)">NorthBot/.env</code> وأدخل جميع القيم المطلوبة.</p>
+          <div class="code-snippet"><span class="key">BOT_TOKEN</span>=<span class="val">توكن_البوت</span><br><span class="key">CLIENT_ID</span>=<span class="val">معرف_التطبيق</span><br><span class="key">GUILD_ID</span>=<span class="val">معرف_السيرفر</span><br><span class="key">OWNER_ID</span>=<span class="val">معرفك_على_ديسكورد</span></div>
+        </div>
+        <div class="setup-card">
+          <h3><div class="setup-step-num">3</div> نشر الأوامر</h3>
+          <p>سجّل جميع أوامر السلاش مع ديسكورد. إذا كان GUILD_ID مضبوطاً ستظهر فوراً.</p>
+          <div class="code-snippet">node src/deploy.js</div>
+        </div>
+        <div class="setup-card">
+          <h3><div class="setup-step-num">4</div> تشغيل البوت</h3>
+          <p>شغّل نورث بوت. للاستضافة المستمرة استخدم PM2.</p>
+          <div class="code-snippet"><span class="comment"># وضع التطوير</span><br>npm start<br><br><span class="comment"># الإنتاج</span><br>pm2 start "npm start" --name NorthBot<br>pm2 save && pm2 startup</div>
+        </div>
+        <div class="setup-card">
+          <h3><div class="setup-step-num">5</div> أوامر الإعداد الأساسية</h3>
+          <p>شغّلها في ديسكورد بعد تشغيل البوت.</p>
+          <div class="code-snippet">/config modlog #mod-logs<br>/logconfig setup #server-logs<br>/welcomeconfig welcomechannel #welcome<br>/ticketconfig supportrole @Staff<br>/ticket panel #support</div>
+        </div>
+        <div class="setup-card">
+          <h3><div class="setup-step-num">6</div> مفاتيح API الاختيارية</h3>
+          <p>أضفها إلى .env لميزات إضافية.</p>
+          <div class="code-snippet"><span class="comment"># أمر الطقس</span><br><span class="key">WEATHER_API_KEY</span>=<span class="val">مفتاحك</span><br><br><span class="comment"># بيانات Spotify</span><br><span class="key">SPOTIFY_CLIENT_ID</span>=<span class="val">معرفك</span><br><span class="key">SPOTIFY_CLIENT_SECRET</span>=<span class="val">سرك</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MODERATION ══ -->
+    <div class="section" id="s-moderation">
+      <div class="section-header">
+        <h2>🛡️ الإشراف</h2>
+        <p>جميع أوامر الإشراف تحت <code style="color:var(--gold);font-family:'DM Mono'">/mod [subcommand]</code> · تتطلب صلاحيات مناسبة لكل إجراء.</p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>أوامر العقوبات</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>mod ban <span class="cmd-arg req">@user</span><span class="cmd-arg">[reason]</span><span class="cmd-arg">[days]</span></div><div class="cmd-desc">حظر عضو من السيرفر. يمكن حذف سجل رسائله من 0 إلى 7 أيام. يُرسل للعضو السبب قبل الحظر.</div><div class="cmd-perm perm-admin">حظر الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>mod unban <span class="cmd-arg req">[userid]</span><span class="cmd-arg">[reason]</span></div><div class="cmd-desc">رفع الحظر عن مستخدم عبر معرّفه. يُسجَّل كحالة UNBAN في سجل الإشراف.</div><div class="cmd-perm perm-admin">حظر الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>mod kick <span class="cmd-arg req">@user</span><span class="cmd-arg">[reason]</span></div><div class="cmd-desc">طرد عضو من السيرفر مع إرسال السبب له.</div><div class="cmd-perm perm-admin">طرد الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>mod softban <span class="cmd-arg req">@user</span><span class="cmd-arg">[reason]</span></div><div class="cmd-desc">يحظر ثم يرفع الحظر فوراً لحذف رسائل 7 أيام دون حظر دائم.</div><div class="cmd-perm perm-admin">حظر الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>mod massban <span class="cmd-arg req">[userids]</span><span class="cmd-arg">[reason]</span></div><div class="cmd-desc">حظر عدة مستخدمين دفعة واحدة. الصق معرّفاتهم مفصولةً بمسافات.</div><div class="cmd-perm perm-admin">حظر الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>mod timeout <span class="cmd-arg req">@user</span><span class="cmd-arg req">[duration]</span><span class="cmd-arg">[reason]</span></div><div class="cmd-desc">إسكات عضو مؤقتاً. الصيغ: 10m أو 1h أو 1d. الحد الأقصى 28 يوماً.</div><div class="cmd-perm perm-admin">إدارة الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>mod untimeout <span class="cmd-arg req">@user</span></div><div class="cmd-desc">إلغاء إسكات عضو قبل انتهاء مدته.</div><div class="cmd-perm perm-admin">إدارة الأعضاء</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>التحذيرات</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>mod warn <span class="cmd-arg req">@user</span><span class="cmd-arg req">[reason]</span></div><div class="cmd-desc">تحذير عضو. يُسجَّل كحالة، ويُرسل للعضو، ويعرض عدد تحذيراته الإجمالي.</div><div class="cmd-perm perm-mod">إدارة الرسائل</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>mod warnings <span class="cmd-arg req">@user</span></div><div class="cmd-desc">عرض جميع تحذيرات العضو مع الأسباب والمشرف والتواريخ.</div><div class="cmd-perm perm-mod">إدارة الرسائل</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>mod clearwarnings <span class="cmd-arg req">@user</span></div><div class="cmd-desc">حذف جميع تحذيرات العضو نهائياً.</div><div class="cmd-perm perm-admin">إدارة الرسائل</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>إدارة القنوات</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>mod purge <span class="cmd-arg req">[1-100]</span><span class="cmd-arg">[@user]</span><span class="cmd-arg">[filter]</span></div><div class="cmd-desc">حذف رسائل متعددة. فلاتر: بوتات فقط، روابط فقط، صور فقط.</div><div class="cmd-perm perm-mod">إدارة الرسائل</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>mod slowmode <span class="cmd-arg req">[0-21600]</span><span class="cmd-arg">[#channel]</span></div><div class="cmd-desc">ضبط وضع السلو موود بالثواني. استخدم 0 للتعطيل.</div><div class="cmd-perm perm-mod">إدارة القنوات</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>mod lock <span class="cmd-arg">[#channel]</span><span class="cmd-arg">[reason]</span></div><div class="cmd-desc">قفل قناة ومنع @everyone من الإرسال فيها.</div><div class="cmd-perm perm-mod">إدارة القنوات</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>mod unlock <span class="cmd-arg">[#channel]</span></div><div class="cmd-desc">فتح قناة مقفلة واستعادة صلاحية الإرسال.</div><div class="cmd-perm perm-mod">إدارة القنوات</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>إدارة الأعضاء</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>mod nickname <span class="cmd-arg req">@user</span><span class="cmd-arg">[nickname]</span></div><div class="cmd-desc">تغيير لقب عضو. اتركه فارغاً لإعادة الاسم الأصلي.</div><div class="cmd-perm perm-mod">إدارة الألقاب</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>mod move <span class="cmd-arg req">@user</span><span class="cmd-arg req">[#voice]</span></div><div class="cmd-desc">نقل عضو إلى قناة صوتية أخرى.</div><div class="cmd-perm perm-mod">نقل الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>mod note <span class="cmd-arg req">@user</span><span class="cmd-arg req">[text]</span></div><div class="cmd-desc">إضافة ملاحظة خاصة بالطاقم على عضو. لا تظهر للعضو.</div><div class="cmd-perm perm-mod">إدارة الرسائل</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>mod notes <span class="cmd-arg req">@user</span></div><div class="cmd-desc">عرض جميع ملاحظات الطاقم على عضو مع التواريخ والكاتب.</div><div class="cmd-perm perm-mod">إدارة الرسائل</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>mod history <span class="cmd-arg req">@user</span></div><div class="cmd-desc">عرض سجل حالات الإشراف الكامل للعضو.</div><div class="cmd-perm perm-mod">إدارة الرسائل</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>role add/remove/info</div><div class="cmd-desc">إضافة أو إزالة رتبة من عضو، أو عرض معلومات تفصيلية عن أي رتبة.</div><div class="cmd-perm perm-admin">إدارة الرتب</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ECONOMY ══ -->
+    <div class="section" id="s-economy">
+      <div class="section-header">
+        <h2>💰 الاقتصاد</h2>
+        <p>جميع أوامر الاقتصاد تحت <code style="color:var(--gold);font-family:'DM Mono'">/eco [subcommand]</code> · عملة السيرفر: كوينز 🪙</p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>الاقتصاد الأساسي</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>eco balance <span class="cmd-arg">[@user]</span></div><div class="cmd-desc">عرض المحفظة والبنك والإجمالي المكتسب وترتيبك في السيرفر.</div><div class="cmd-perm perm-all">جميع الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>eco daily</div><div class="cmd-desc">استلام الكوينز اليومية. مكافأة تراكمية: +50 كوين لكل يوم متتالي.</div><span class="tag tag-cooldown">كولداون 24 ساعة</span></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>eco weekly</div><div class="cmd-desc">استلام مكافأتك الأسبوعية وقيمتها 2,500 كوين.</div><span class="tag tag-cooldown">كولداون 7 أيام</span></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>eco work</div><div class="cmd-desc">اعمل في وظيفة عشوائية واكسب من 150 إلى 400 كوين.</div><span class="tag tag-cooldown">كولداون ساعة</span></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>eco crime</div><div class="cmd-desc">ارتكب جريمة لمكافأة كبيرة — نسبة نجاح 60%.</div><span class="tag tag-cooldown">كولداون ساعتين</span></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>eco rob <span class="cmd-arg req">@user</span></div><div class="cmd-desc">سرقة محفظة عضو آخر. نسبة نجاح 55%. يحتاج الهدف 200+ كوين.</div><span class="tag tag-cooldown">كولداون 3 ساعات</span></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>eco pay <span class="cmd-arg req">@user</span><span class="cmd-arg req">[amount]</span></div><div class="cmd-desc">تحويل كوينز من محفظتك إلى محفظة عضو آخر.</div><div class="cmd-perm perm-all">جميع الأعضاء</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>eco deposit/withdraw <span class="cmd-arg req">[amount|all]</span></div><div class="cmd-desc">نقل الكوينز بين محفظتك والبنك. استخدم "all" لنقل الكل.</div><div class="cmd-perm perm-all">جميع الأعضاء</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>الجمع والاستخراج</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--blue)"><div class="cmd-name"><span class="cmd-slash">/</span>eco fish</div><div class="cmd-desc">اصطد سمكاً: شائع (150-300)، استوائي (250-500)، كفجر (300-600)، قرش (800-1500).</div><span class="tag tag-cooldown">كولداون 30 دقيقة</span></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>eco hunt</div><div class="cmd-desc">اصطد بالصيد البري. 80% فرصة لاصطياد حيوان يساوي 100-2000 كوين.</div><span class="tag tag-cooldown">كولداون ساعة</span></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>eco mine</div><div class="cmd-desc">التعدين: حجر، حديد، ذهب، ألماس، غبار نجوم (50 إلى 3000 كوين).</div><span class="tag tag-cooldown">كولداون ساعة</span></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>القمار والألعاب</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>eco slots <span class="cmd-arg req">[bet]</span></div><div class="cmd-desc">دوّر 3 بكرات. ثلاث 💎 = 10x. ثلاث 7️⃣ = 7x. ثلاث ⭐ = 5x.</div><div class="cmd-perm perm-all">الحد الأدنى: 10</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>eco coinflip <span class="cmd-arg req">[heads/tails]</span><span class="cmd-arg req">[bet]</span></div><div class="cmd-desc">50/50 فرصة لمضاعفة رهانك.</div><div class="cmd-perm perm-all">الحد الأدنى: 10</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>blackjack <span class="cmd-arg req">[bet]</span></div><div class="cmd-desc">بلاك جاك كامل مع Hit وStand وDouble Down. الـ Blackjack يعطي 2.5x.</div><div class="cmd-perm perm-all">الحد الأدنى: 10</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>heist <span class="cmd-arg req">[bet]</span></div><div class="cmd-desc">ابدأ سطواً جماعياً. يُشارك الآخرون خلال 30 ثانية. الفائزون يقسمون الغنيمة.</div><div class="cmd-perm perm-all">الحد الأدنى: 200</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>المتجر والمخزون</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>shop view</div><div class="cmd-desc">تصفّح جميع عناصر متجر السيرفر مع الأسعار والأوصاف.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>shop buy <span class="cmd-arg req">[id]</span><span class="cmd-arg">[quantity]</span></div><div class="cmd-desc">شراء عنصر من المتجر. تُسند الرتب تلقائياً عند الشراء.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>shop add <span class="cmd-arg req">[name]</span><span class="cmd-arg req">[price]</span><span class="cmd-arg">[@role]</span></div><div class="cmd-desc">إضافة عنصر جديد للمتجر مع رتبة اختيارية عند الشراء.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>shop remove <span class="cmd-arg req">[id]</span></div><div class="cmd-desc">حذف عنصر من المتجر نهائياً.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>eco inventory <span class="cmd-arg">[@user]</span></div><div class="cmd-desc">عرض مخزونك أو مخزون عضو آخر مع كميات العناصر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>eco richlist <span class="cmd-arg">[10/20]</span></div><div class="cmd-desc">قائمة الأثرياء مرتّبة بإجمالي الكوينز. أفضل 10 أو 20.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>تحكم الأدمن</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>eco give <span class="cmd-arg req">@user</span><span class="cmd-arg req">[amount]</span></div><div class="cmd-desc">منح كوينز لعضو.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>eco take <span class="cmd-arg req">@user</span><span class="cmd-arg req">[amount]</span></div><div class="cmd-desc">خصم كوينز من عضو.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>eco reset <span class="cmd-arg req">@user</span></div><div class="cmd-desc">مسح بيانات اقتصاد عضو بالكامل: المحفظة والبنك والمخزون.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MUSIC ══ -->
+    <div class="section" id="s-music">
+      <div class="section-header">
+        <h2>🎵 الموسيقى</h2>
+        <p>جميع أوامر الموسيقى تحت <code style="color:var(--gold);font-family:'DM Mono'">/music [subcommand]</code> · يدعم YouTube وSpotify وSoundCloud</p>
+      </div>
+      <div class="highlight-box"><div class="highlight-icon">⚠️</div><div class="highlight-text"><h4>yt-dlp مطلوب</h4><p>الموسيقى تحتاج yt-dlp مثبّتاً: <code style="font-family:'DM Mono';color:var(--gold)">winget install yt-dlp</code></p></div></div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>التشغيل</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>music play <span class="cmd-arg req">[query]</span></div><div class="cmd-desc">تشغيل أغنية أو قائمة. يقبل أسماء الأغاني وروابط يوتيوب وسبوتيفاي وساوندكلاود.</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>music pause</div><div class="cmd-desc">إيقاف الأغنية الحالية مؤقتاً.</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>music resume</div><div class="cmd-desc">استئناف أغنية متوقفة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>music stop</div><div class="cmd-desc">إيقاف الموسيقى ومسح طابور التشغيل بالكامل.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music skip <span class="cmd-arg">[position]</span></div><div class="cmd-desc">تخطي الأغنية الحالية. يمكن القفز إلى موضع محدد.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music seek <span class="cmd-arg req">[time]</span></div><div class="cmd-desc">الانتقال لوقت محدد. الصيغة: 1:30 أو 90 (ثانية).</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music volume <span class="cmd-arg">[1-150]</span></div><div class="cmd-desc">ضبط مستوى الصوت. الافتراضي 100.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>music loop <span class="cmd-arg req">[song/queue/off]</span></div><div class="cmd-desc">تكرار الأغنية الحالية، أو الطابور كاملاً، أو إيقاف التكرار.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music shuffle</div><div class="cmd-desc">خلط أغاني الطابور عشوائياً. يحتاج على الأقل أغنيتين.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music disconnect</div><div class="cmd-desc">قطع اتصال البوت من الصوت ومسح الطابور.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>المعلومات والقوائم</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>music nowplaying</div><div class="cmd-desc">عرض الأغنية الحالية مع شريط التقدم ومستوى الصوت ووضع التكرار.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music queue <span class="cmd-arg">[page]</span></div><div class="cmd-desc">عرض الطابور مع التنقل (10 أغانٍ لكل صفحة).</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>music filter <span class="cmd-arg req">[filter]</span></div><div class="cmd-desc">تطبيق فلتر صوتي: bassboost، nightcore، 8d، vaporwave، echo وأكثر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music save <span class="cmd-arg req">[name]</span></div><div class="cmd-desc">حفظ الطابور الحالي كقائمة تشغيل باسم محدد.</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>music load <span class="cmd-arg req">[name]</span></div><div class="cmd-desc">تحميل قائمة تشغيل محفوظة وإضافة أغانيها للطابور.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>music playlists</div><div class="cmd-desc">عرض جميع قوائم تشغيلك المحفوظة مع عدد الأغاني.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>music deleteplaylist <span class="cmd-arg req">[name]</span></div><div class="cmd-desc">حذف قائمة تشغيل محفوظة نهائياً.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LEVELING ══ -->
+    <div class="section" id="s-leveling">
+      <div class="section-header">
+        <h2>⭐ نظام المستويات</h2>
+        <p>يُكتسب الـ XP تلقائياً بإرسال الرسائل. اضبط المعدلات والأوقات ومكافآت الرتب.</p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>أوامر المستخدم</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>rank <span class="cmd-arg">[@user]</span></div><div class="cmd-desc">عرض بطاقة الرتبة مع المستوى والـ XP الحالي والمطلوب والترتيب.</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>top <span class="cmd-arg">[10/20]</span></div><div class="cmd-desc">قائمة المتصدرين مرتّبة بالمستوى والـ XP.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>إدارة الـ XP (للأدمن)</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>xp set <span class="cmd-arg req">@user</span><span class="cmd-arg req">[amount]</span></div><div class="cmd-desc">ضبط XP مستخدم لقيمة محددة.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>xp add <span class="cmd-arg req">@user</span><span class="cmd-arg req">[amount]</span></div><div class="cmd-desc">إضافة XP لمستخدم.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>xp remove <span class="cmd-arg req">@user</span><span class="cmd-arg req">[amount]</span></div><div class="cmd-desc">خصم XP من مستخدم.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>xp reset <span class="cmd-arg req">@user</span></div><div class="cmd-desc">إعادة ضبط XP ومستوى المستخدم إلى الصفر.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>إعداد المستويات</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig status</div><div class="cmd-desc">عرض جميع إعدادات المستويات.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig channel <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تحديد القناة لإعلانات الارتقاء في المستوى.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig xprate <span class="cmd-arg req">[min]</span><span class="cmd-arg req">[max]</span></div><div class="cmd-desc">ضبط نطاق XP لكل رسالة. الافتراضي: 15-25.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig cooldown <span class="cmd-arg req">[seconds]</span></div><div class="cmd-desc">ضبط وقت الانتظار بين رسائل XP. الافتراضي: 60 ثانية.</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig multiplier <span class="cmd-arg req">[value]</span></div><div class="cmd-desc">ضبط مضاعف XP لجميع الأعضاء. 2.0 = ضعف XP.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig levelrole <span class="cmd-arg req">[level]</span><span class="cmd-arg req">@role</span></div><div class="cmd-desc">تحديد مكافأة رتبة عند الوصول لمستوى معين.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig removelevelrole <span class="cmd-arg req">[level]</span></div><div class="cmd-desc">حذف مكافأة الرتبة المخصصة لمستوى معين.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>levelconfig noxpchannel/noxprole</div><div class="cmd-desc">تبديل قناة أو رتبة لا يُكتسب فيها XP.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ VOICE ══ -->
+    <div class="section" id="s-voice">
+      <div class="section-header">
+        <h2>🎙️ تتبع الصوت</h2>
+        <p>يتتبع وقت الجلوس في القنوات الصوتية تلقائياً. جميع المميزات اختيارية.</p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>لوحة المتصدرين</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>topvoice <span class="cmd-arg">[week/month/alltime]</span><span class="cmd-arg">[10/20]</span></div><div class="cmd-desc">قائمة متصدري وقت الصوت مع أزرار تبديل الفترة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>voicestats <span class="cmd-arg">[@user]</span></div><div class="cmd-desc">إحصائيات الصوت الشخصية: آخر 7 أيام، آخر 30 يوماً، الكل، والترتيب.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>إعداد الصوت</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>voiceconfig status</div><div class="cmd-desc">عرض جميع إعدادات تتبع الصوت.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>voiceconfig channel <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تحديد قناة إعلانات الإنجازات والملخص الأسبوعي.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>voiceconfig milestones <span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">تبديل إعلانات الإنجازات عند الوصول لـ 1h و5h وحتى 500h.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>voiceconfig weekly <span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">تبديل الملخص الأسبوعي التلقائي.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>voiceconfig newtop <span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">تبديل الإعلان عند تصدّر شخص المركز الأول.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>voiceconfig ignorechannel/ignorerole</div><div class="cmd-desc">تجاهل قناة صوتية أو رتبة في التتبع.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>voiceconfig reset</div><div class="cmd-desc">مسح جميع بيانات وقت الصوت لهذا السيرفر نهائياً.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TICKETS ══ -->
+    <div class="section" id="s-tickets">
+      <div class="section-header">
+        <h2>🎫 التذاكر</h2>
+        <p>نظام تذاكر متكامل مع لوحات عرض، استلام الطاقم، إدارة المستخدمين والسجلات.</p>
+      </div>
+      <div class="highlight-box"><div class="highlight-icon">📋</div><div class="highlight-text"><h4>ترتيب الإعداد الموصى به</h4><p><code style="font-family:'DM Mono';color:var(--gold)">/ticketconfig category</code> ← <code style="font-family:'DM Mono';color:var(--gold)">/ticketconfig supportrole</code> ← <code style="font-family:'DM Mono';color:var(--gold)">/ticketconfig logchannel</code> ← <code style="font-family:'DM Mono';color:var(--gold)">/ticket panel</code></p></div></div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>إدارة التذاكر</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket open <span class="cmd-arg">[topic]</span></div><div class="cmd-desc">فتح تذكرة دعم. تُنشئ قناة خاصة بالمستخدم وفريق الدعم.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket close</div><div class="cmd-desc">إغلاق التذكرة الحالية. تُحذف القناة بعد 5 ثواني.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket claim</div><div class="cmd-desc">استلام التذكرة ليعلم باقي الطاقم من يتولاها.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket unclaim</div><div class="cmd-desc">التخلي عن استلام التذكرة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket add <span class="cmd-arg req">@user</span></div><div class="cmd-desc">إضافة مستخدم لقناة التذكرة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket remove <span class="cmd-arg req">@user</span></div><div class="cmd-desc">إزالة صلاحية الوصول لمستخدم من قناة التذكرة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket rename <span class="cmd-arg req">[name]</span></div><div class="cmd-desc">إعادة تسمية قناة التذكرة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>ticket panel <span class="cmd-arg req">#channel</span><span class="cmd-arg">[title]</span><span class="cmd-arg">[desc]</span></div><div class="cmd-desc">إنشاء لوحة تذاكر بزر "افتح تذكرة".</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>إعداد التذاكر</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticketconfig status</div><div class="cmd-desc">عرض جميع إعدادات نظام التذاكر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticketconfig category <span class="cmd-arg req">[#category]</span></div><div class="cmd-desc">تحديد فئة ديسكورد التي تُنشأ فيها قنوات التذاكر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticketconfig logchannel <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تحديد قناة تسجيل أحداث التذاكر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>ticketconfig supportrole <span class="cmd-arg req">@role</span></div><div class="cmd-desc">تحديد رتبة الطاقم التي تصل تلقائياً لجميع قنوات التذاكر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticketconfig maxtickets <span class="cmd-arg req">[1-5]</span></div><div class="cmd-desc">الحد الأقصى للتذاكر المفتوحة لمستخدم. الافتراضي: 1.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>ticketconfig welcomemsg <span class="cmd-arg req">[message]</span></div><div class="cmd-desc">تحديد الرسالة التي تُعرض في أعلى كل قناة تذكرة جديدة.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ GIVEAWAYS ══ -->
+    <div class="section" id="s-giveaways">
+      <div class="section-header">
+        <h2>🎉 السحوبات</h2>
+        <p>جميع أوامر السحوبات. يدخل الأعضاء بالنقر على زر 🎉. للأدمن فقط إدارتها.</p>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-card" style="--card-color:#ff6b9d"><div class="cmd-name"><span class="cmd-slash">/</span>giveaway start <span class="cmd-arg req">#channel</span><span class="cmd-arg req">[duration]</span><span class="cmd-arg req">[prize]</span><span class="cmd-arg">[winners]</span><span class="cmd-arg">[@role]</span></div><div class="cmd-desc">بدء سحب. المدة: 10m أو 1h أو 1d. خيارات: رتبة مطلوبة، مستوى مطلوب، عدة فائزين.</div><div class="cmd-perm perm-admin">إدارة السيرفر</div></div>
+        <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>giveaway end <span class="cmd-arg req">[message-id]</span></div><div class="cmd-desc">إنهاء سحب مبكراً واختيار الفائزين فوراً.</div><div class="cmd-perm perm-admin">إدارة السيرفر</div></div>
+        <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>giveaway reroll <span class="cmd-arg req">[message-id]</span></div><div class="cmd-desc">اختيار فائز جديد من سحب منتهٍ.</div><div class="cmd-perm perm-admin">إدارة السيرفر</div></div>
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>giveaway list</div><div class="cmd-desc">عرض جميع السحوبات النشطة مع أوقات الانتهاء وعدد المشاركين.</div></div>
+        <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>giveaway delete <span class="cmd-arg req">[message-id]</span></div><div class="cmd-desc">حذف سحب وإزالة الرسالة نهائياً.</div><div class="cmd-perm perm-admin">إدارة السيرفر</div></div>
+      </div>
+    </div>
+
+    <!-- ══ FUN ══ -->
+    <div class="section" id="s-fun">
+      <div class="section-header">
+        <h2>🎮 الترفيه والألعاب</h2>
+        <p>أوامر المرح تحت <code style="color:var(--gold);font-family:'DM Mono'">/fun [subcommand]</code> · الألعاب هي أوامر مستقلة</p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>أوامر الترفيه (/fun)</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>fun 8ball <span class="cmd-arg req">[question]</span></div><div class="cmd-desc">اسأل الكرة السحرية أي سؤال. إجابة من 20 إجابة ممكنة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>fun dice <span class="cmd-arg">[sides]</span><span class="cmd-arg">[count]</span></div><div class="cmd-desc">رمي نرد قابل للتخصيص مع إظهار كل رمية والمجموع.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>fun rps <span class="cmd-arg req">[rock/paper/scissors]</span></div><div class="cmd-desc">العب حجر ورق مقص ضد البوت.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>fun joke / fact / quote</div><div class="cmd-desc">احصل على نكتة عشوائية، حقيقة مثيرة، أو اقتباس ملهم.</div></div>
+          <div class="cmd-card" style="--card-color:#ff6b9d"><div class="cmd-name"><span class="cmd-slash">/</span>fun roast <span class="cmd-arg req">@user</span></div><div class="cmd-desc">اسخر من شخص بجملة عشوائية لاذعة.</div></div>
+          <div class="cmd-card" style="--card-color:#ff6b9d"><div class="cmd-name"><span class="cmd-slash">/</span>fun compliment <span class="cmd-arg req">@user</span></div><div class="cmd-desc">أرسل لشخص مجاملة محبّبة.</div></div>
+          <div class="cmd-card" style="--card-color:#ff6b9d"><div class="cmd-name"><span class="cmd-slash">/</span>fun ship <span class="cmd-arg req">@user1</span><span class="cmd-arg">[@user2]</span></div><div class="cmd-desc">افحص التوافق بين مستخدمَين. يعرض النسبة وشريط القلوب.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>fun mock / uwu / reverse / clap / aesthetic</div><div class="cmd-desc">تحويل النص إلى صيغ مختلفة مضحكة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>fun choose <span class="cmd-arg req">[opt1|opt2|...]</span></div><div class="cmd-desc">دع البوت يختار عشوائياً بين خياراتك.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>fun poll <span class="cmd-arg req">[question]</span></div><div class="cmd-desc">إنشاء استطلاع سريع نعم/لا مع تفاعلات تلقائية.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>الألعاب</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>trivia <span class="cmd-arg">[bet]</span></div><div class="cmd-desc">أجب على سؤال معلومات عامة خلال 30 ثانية. يمكن المراهنة بالكوينز.</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>tictactoe <span class="cmd-arg req">@opponent</span></div><div class="cmd-desc">العب إكس-أو بأزرار تفاعلية ضد عضو آخر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>connect4 <span class="cmd-arg req">@opponent</span></div><div class="cmd-desc">العب كونكت فور — أسقط قطعاً في شبكة 6×7.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>hangman</div><div class="cmd-desc">العب لعبة الشنق بأزرار الحروف. خمّن الكلمة قبل نفاد 6 أرواح.</div></div>
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>wordle <span class="cmd-arg">[guess]</span></div><div class="cmd-desc">العب وردل — خمّن كلمة 5 أحرف في 6 محاولات. 🟩🟨⬛</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>meme <span class="cmd-arg">[category]</span></div><div class="cmd-desc">احصل على ميم عشوائي من ريدّيت.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ UTILITY ══ -->
+    <div class="section" id="s-utility">
+      <div class="section-header">
+        <h2>🔧 الأدوات</h2>
+        <p>أوامر المعلومات تحت <code style="color:var(--gold);font-family:'DM Mono'">/info</code> · الأدوات تحت <code style="color:var(--gold);font-family:'DM Mono'">/tools</code></p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>أوامر المعلومات (/info)</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>info user <span class="cmd-arg">[@user]</span></div><div class="cmd-desc">ملف المستخدم الكامل: المعرف، اللقب، تاريخ الإنشاء، الانضمام، جميع الرتب.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>info server</div><div class="cmd-desc">معلومات السيرفر: المعرف، المالك، تاريخ الإنشاء، الأعضاء، القنوات، الرتب، البوستات.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>info avatar <span class="cmd-arg">[@user]</span></div><div class="cmd-desc">الحصول على صورة مستخدم بأعلى دقة مع روابط تحميل.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>info banner <span class="cmd-arg">[@user]</span></div><div class="cmd-desc">الحصول على غلاف ملف مستخدم بالحجم الكامل.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>info channel / role / invite</div><div class="cmd-desc">تفاصيل القناة أو الرتبة أو الدعوة بجميع معلوماتها.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>الأدوات (/tools)</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>tools ping</div><div class="cmd-desc">فحص زمن استجابة البوت وزمن استجابة Discord API.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>tools botinfo</div><div class="cmd-desc">إحصائيات البوت: السيرفرات، المستخدمون، الأوامر، وقت التشغيل.</div></div>
+          <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>tools calc <span class="cmd-arg req">[expression]</span></div><div class="cmd-desc">حساب تعبير رياضي بأمان.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>tools color <span class="cmd-arg req">[hex]</span></div><div class="cmd-desc">معاينة رمز لون hex بصرياً مع قيم HEX وRGB.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>tools timestamp <span class="cmd-arg req">[date]</span></div><div class="cmd-desc">تحويل أي تاريخ إلى جميع صيغ الطوابع الزمنية لديسكورد.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>tools weather <span class="cmd-arg req">[city]</span></div><div class="cmd-desc">الطقس الحالي لأي مدينة. يتطلب WEATHER_API_KEY في .env.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>tools translate <span class="cmd-arg req">[text]</span><span class="cmd-arg req">[lang]</span></div><div class="cmd-desc">ترجمة نص لأي لغة. رموز اللغة: ar، en، fr، es، ja.</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>tools snipe / editsnipe</div><div class="cmd-desc">عرض آخر رسالة محذوفة أو معدَّلة في القناة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>tools afk <span class="cmd-arg">[reason]</span></div><div class="cmd-desc">تعيين حالة غياب. يُزال تلقائياً عند إرسال رسالة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>tools qr <span class="cmd-arg req">[text/url]</span></div><div class="cmd-desc">توليد رمز QR قابل للمسح لأي نص أو رابط.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>tools encode <span class="cmd-arg req">[action]</span><span class="cmd-arg req">[text]</span></div><div class="cmd-desc">تشفير/فك تشفير: Base64، ثنائي، مورس.</div></div>
+          <div class="cmd-card" style="--card-color:#ff6b9d"><div class="cmd-name"><span class="cmd-slash">/</span>tools steal <span class="cmd-arg req">[emoji]</span></div><div class="cmd-desc">سرقة إيموجي مخصص من سيرفر آخر وإضافته لسيرفرك.</div><div class="cmd-perm perm-admin">إدارة الإيموجي</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>أدوات مستقلة</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>remind set/list/cancel</div><div class="cmd-desc">ضبط تذكير (30m، 2h، 1d)، عرضه، أو إلغاؤه.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>poll <span class="cmd-arg req">[question]</span><span class="cmd-arg req">[options]</span></div><div class="cmd-desc">إنشاء استطلاع متعدد الخيارات (حتى 10 خيارات مفصولة بـ |).</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>help <span class="cmd-arg">[category]</span></div><div class="cmd-desc">مرجع أوامر تفاعلي مع قائمة منسدلة. يعمل مباشرةً في ديسكورد.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LOGGING ══ -->
+    <div class="section" id="s-logging">
+      <div class="section-header">
+        <h2>📋 السجلات</h2>
+        <p>يتتبع 16 حدثاً مختلفاً. فعّله بأمر واحد ثم اضبط الأحداث التي تريدها.</p>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>logconfig setup <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تفعيل التسجيل وتحديد قناة السجلات. يُفعّل جميع الأحداث الـ 16 افتراضياً.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>logconfig toggle <span class="cmd-arg req">[event]</span></div><div class="cmd-desc">تبديل أحداث السجل بشكل فردي: تعديل رسالة، حذف، انضمام، مغادرة، حظر، صوت وأكثر.</div></div>
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>logconfig ignorechannel <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">إيقاف تسجيل الأحداث في قناة محددة.</div></div>
+        <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>logconfig disable</div><div class="cmd-desc">إيقاف جميع التسجيلات مع الاحتفاظ بالإعداد.</div></div>
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>logconfig status</div><div class="cmd-desc">عرض الأحداث المفعّلة والمعطّلة وقناة السجلات الحالية.</div></div>
+      </div>
+    </div>
+
+    <!-- ══ WELCOME ══ -->
+    <div class="section" id="s-welcome">
+      <div class="section-header">
+        <h2>👋 الترحيب / المغادرة</h2>
+        <p>رسائل ترحيب ومغادرة قابلة للتخصيص مع استبدال المتغيرات. دعم الرتبة التلقائية.</p>
+      </div>
+      <div class="highlight-box"><div class="highlight-icon">💬</div><div class="highlight-text"><h4>المتغيرات المتاحة</h4><p><code style="font-family:'DM Mono';color:var(--gold)">{user}</code> = إشارة للعضو &nbsp;|&nbsp; <code style="font-family:'DM Mono';color:var(--gold)">{username}</code> = اسم &nbsp;|&nbsp; <code style="font-family:'DM Mono';color:var(--gold)">{server}</code> = اسم السيرفر &nbsp;|&nbsp; <code style="font-family:'DM Mono';color:var(--gold)">{membercount}</code> = عدد الأعضاء</p></div></div>
+      <div class="cmd-grid">
+        <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig welcomechannel <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تحديد القناة التي تُرسَل فيها رسائل الترحيب.</div></div>
+        <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig welcomemsg <span class="cmd-arg req">[message]</span></div><div class="cmd-desc">تحديد نص رسالة الترحيب مع دعم المتغيرات.</div></div>
+        <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig leavechannel <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تحديد القناة التي تُرسَل فيها رسائل المغادرة.</div></div>
+        <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig leavemsg <span class="cmd-arg req">[message]</span></div><div class="cmd-desc">تحديد نص رسالة المغادرة مع دعم المتغيرات.</div></div>
+        <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig welcomedm <span class="cmd-arg">[message]</span></div><div class="cmd-desc">إرسال رسالة خاصة لكل عضو جديد تلقائياً.</div></div>
+        <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig autorole <span class="cmd-arg">@role</span></div><div class="cmd-desc">منح رتبة تلقائياً لكل عضو جديد ينضم.</div></div>
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig status</div><div class="cmd-desc">عرض جميع إعدادات الترحيب/المغادرة الحالية.</div></div>
+        <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>welcomeconfig test</div><div class="cmd-desc">تشغيل رسالة الترحيب على نفسك للمعاينة.</div></div>
+      </div>
+    </div>
+
+    <!-- ══ AUTOMOD ══ -->
+    <div class="section" id="s-automod">
+      <div class="section-header">
+        <h2>🤖 الإشراف التلقائي</h2>
+        <p>إشراف تلقائي. جميع المميزات معطّلة افتراضياً — فعّل ما تحتاجه.</p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>التحكم الرئيسي</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--green)"><div class="cmd-name"><span class="cmd-slash">/</span>automod enable</div><div class="cmd-desc">تفعيل الإشراف التلقائي لهذا السيرفر.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>automod disable</div><div class="cmd-desc">تعطيل جميع معالجة الإشراف التلقائي مع الاحتفاظ بالإعداد.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>automod status</div><div class="cmd-desc">عرض جميع إعدادات الإشراف التلقائي.</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>automod action <span class="cmd-arg req">[type]</span></div><div class="cmd-desc">تحديد ما يحدث عند التفعيل: تحذير، إسكات 5 دقائق، أو طرد.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>automod logchannel <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تحديد قناة تسجيل مخالفات الإشراف التلقائي.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>automod exempt <span class="cmd-arg">[#channel]</span><span class="cmd-arg">[@role]</span></div><div class="cmd-desc">إعفاء قناة أو رتبة من جميع فحوصات الإشراف التلقائي.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>تبديل المميزات</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>automod antispam <span class="cmd-arg req">[on/off]</span><span class="cmd-arg">[threshold]</span></div><div class="cmd-desc">الكشف عن سبام الرسائل. الافتراضي: 5 رسائل في 5 ثواني.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>automod antilinks <span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">حظر جميع روابط HTTP/HTTPS في الرسائل.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>automod antiinvites <span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">حظر روابط دعوات سيرفرات ديسكورد.</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>automod anticaps <span class="cmd-arg req">[on/off]</span><span class="cmd-arg">[threshold%]</span></div><div class="cmd-desc">حظر الرسائل الكثيرة الأحرف الكبيرة. الافتراضي: 70%.</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>automod antiemoji <span class="cmd-arg req">[on/off]</span><span class="cmd-arg">[max]</span></div><div class="cmd-desc">حظر الرسائل الكثيرة الإيموجي. الافتراضي: حد 10.</div></div>
+          <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>automod antimentions <span class="cmd-arg req">[on/off]</span><span class="cmd-arg">[max]</span></div><div class="cmd-desc">حظر رسائل الإشارات الجماعية. الافتراضي: 5 إشارات.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>automod antizalgo <span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">حظر نص الزالغو ذو الأحرف المشوّهة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>automod wordfilter <span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">تفعيل فلتر الكلمات المخصص.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>automod addword / removeword <span class="cmd-arg req">[word]</span></div><div class="cmd-desc">إضافة أو إزالة كلمة من قائمة المحظورات.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROLES ══ -->
+    <div class="section" id="s-roles">
+      <div class="section-header">
+        <h2>🏷️ رتب التفاعل</h2>
+        <p>ثلاثة أنواع: رتب تفاعل إيموجي، رتب أزرار، ورتب قائمة اختيار.</p>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>رتب التفاعل</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>reactionrole add <span class="cmd-arg req">[msg-id]</span><span class="cmd-arg req">[emoji]</span><span class="cmd-arg req">@role</span></div><div class="cmd-desc">إضافة رتبة تفاعل لرسالة موجودة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>reactionrole remove <span class="cmd-arg req">[msg-id]</span><span class="cmd-arg req">[emoji]</span></div><div class="cmd-desc">إزالة رتبة تفاعل من رسالة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>reactionrole list</div><div class="cmd-desc">عرض جميع رتب التفاعل في هذا السيرفر.</div></div>
+        </div>
+      </div>
+      <div class="cmd-group">
+        <div class="group-title"><div class="group-line"></div>رتب الأزرار</div>
+        <div class="cmd-grid">
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>reactionrole buttonrole <span class="cmd-arg req">#channel</span><span class="cmd-arg">[title]</span></div><div class="cmd-desc">إنشاء لوحة رتب أزرار في قناة.</div></div>
+          <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>reactionrole addbutton <span class="cmd-arg req">@role</span><span class="cmd-arg req">[label]</span><span class="cmd-arg">[style]</span></div><div class="cmd-desc">إضافة زر للوحة الأزرار الأخيرة.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANNOUNCEMENTS ══ -->
+    <div class="section" id="s-announcements">
+      <div class="section-header">
+        <h2>📣 الإعلانات</h2>
+        <p>إرسال إعلانات embed منسّقة، رسائل خاصة جماعية، أو بناء embeds مخصصة.</p>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>announce send <span class="cmd-arg req">#channel</span><span class="cmd-arg req">[message]</span><span class="cmd-arg">[title]</span><span class="cmd-arg">[color]</span><span class="cmd-arg">[@role]</span></div><div class="cmd-desc">إرسال إعلان embed منسّق مع عنوان ولون وإشارة رتبة اختيارية.</div><div class="cmd-perm perm-admin">إدارة السيرفر</div></div>
+        <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>announce embed <span class="cmd-arg req">#channel</span><span class="cmd-arg req">[title]</span><span class="cmd-arg req">[desc]</span><span class="cmd-arg">[+more]</span></div><div class="cmd-desc">بناء embed غني مخصص بالكامل: عنوان، وصف، ألوان، صورة، تذييل.</div><div class="cmd-perm perm-admin">إدارة السيرفر</div></div>
+        <div class="cmd-card" style="--card-color:var(--orange)"><div class="cmd-name"><span class="cmd-slash">/</span>announce dm <span class="cmd-arg req">@role</span><span class="cmd-arg req">[message]</span></div><div class="cmd-desc">إرسال رسالة خاصة لجميع أصحاب رتبة محددة مع حماية من حدود API.</div><div class="cmd-perm perm-admin">إدارة السيرفر</div></div>
+      </div>
+    </div>
+
+    <!-- ══ ADMIN ══ -->
+    <div class="section" id="s-admin">
+      <div class="section-header">
+        <h2>⚙️ إعدادات الأدمن</h2>
+        <p>إعدادات البوت على مستوى السيرفر، إدارة الوحدات، وإعادة ضبط البيانات.</p>
+      </div>
+      <div class="cmd-grid">
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>config overview</div><div class="cmd-desc">نظرة عامة كاملة على إعداد السيرفر: جميع القنوات والرتب وحالات الوحدات.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>config module <span class="cmd-arg req">[name]</span><span class="cmd-arg req">[on/off]</span></div><div class="cmd-desc">تفعيل أو تعطيل وحدة كاملة لهذا السيرفر.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        <div class="cmd-card" style="--card-color:var(--silver)"><div class="cmd-name"><span class="cmd-slash">/</span>config modules</div><div class="cmd-desc">عرض جميع الوحدات الـ 15 مع حالة التفعيل/التعطيل.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        <div class="cmd-card" style="--card-color:var(--gold)"><div class="cmd-name"><span class="cmd-slash">/</span>config modlog <span class="cmd-arg req">#channel</span></div><div class="cmd-desc">تحديد قناة سجل الإشراف.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        <div class="cmd-card" style="--card-color:var(--purple)"><div class="cmd-name"><span class="cmd-slash">/</span>config muterole <span class="cmd-arg req">@role</span></div><div class="cmd-desc">تحديد رتبة الكتم للسيرفر.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+        <div class="cmd-card" style="--card-color:var(--red)"><div class="cmd-name"><span class="cmd-slash">/</span>config reset</div><div class="cmd-desc">⚠️ مسح جميع بيانات البوت لهذا السيرفر نهائياً. لا يمكن التراجع.</div><div class="cmd-perm perm-admin">أدمن</div></div>
+      </div>
+    </div>
+
+    <!-- ══ SEARCH ══ -->
+    <div class="section" id="s-search">
+      <div class="section-header">
+        <h2>🔍 نتائج البحث</h2>
+        <p id="search-result-count">عرض جميع الأوامر</p>
+      </div>
+      <div class="cmd-grid" id="search-results"></div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ══════════════════ PARTICLES ══════════════════
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  for(let i=0;i<90;i++){
+    particles.push({
+      x:Math.random()*1920, y:Math.random()*1080,
+      r:Math.random()*1.4+0.2,
+      vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3,
+      alpha:Math.random()*0.5+0.1,
+      pulse:Math.random()*Math.PI*2,
+      gold:Math.random()<0.12
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.pulse+=0.008;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      const a=p.alpha*(0.6+0.4*Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      if(p.gold){ ctx.fillStyle=`rgba(212,168,83,${a})`; }
+      else { const g=Math.floor(180+Math.sin(p.pulse)*30); ctx.fillStyle=`rgba(${g},${g},${g},${a})`; }
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ══════════════════ NAVIGATION ══════════════════
+function show(id, el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = {
+    overview:'لوحة التحكم', setup:'دليل الإعداد', moderation:'الإشراف',
+    economy:'الاقتصاد', music:'الموسيقى', leveling:'نظام المستويات', voice:'تتبع الصوت',
+    tickets:'التذاكر', giveaways:'السحوبات', fun:'الترفيه والألعاب', utility:'الأدوات',
+    logging:'السجلات', welcome:'الترحيب / المغادرة', automod:'الإشراف التلقائي',
+    roles:'رتب التفاعل', announcements:'الإعلانات', admin:'إعدادات الأدمن', search:'نتائج البحث'
+  };
+  document.getElementById('page-title').textContent = titles[id]||id;
+  window.scrollTo(0,0);
+}
+
+// ══════════════════ COPY BUTTONS ══════════════════
+// Copy SVG icon markup
+const COPY_ICON = `<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>`;
+const CHECK_ICON = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+function injectCopyButtons() {
+  document.querySelectorAll('.cmd-card').forEach(card => {
+    // skip if already has one
+    if (card.querySelector('.copy-btn')) return;
+
+    // Extract the command text from .cmd-name (LTR mono text)
+    const nameEl = card.querySelector('.cmd-name');
+    if (!nameEl) return;
+
+    // Build the command string: grab all text nodes + span text, strip extra whitespace
+    const cmdText = nameEl.innerText
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.setAttribute('data-tip', 'نسخ');
+    btn.setAttribute('title', cmdText);
+    btn.innerHTML = COPY_ICON;
+    btn.setAttribute('aria-label', 'نسخ الأمر');
+
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(cmdText).then(() => {
+        btn.classList.add('copied');
+        btn.innerHTML = CHECK_ICON;
+        btn.setAttribute('data-tip', '✓ تم النسخ');
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = COPY_ICON;
+          btn.setAttribute('data-tip', 'نسخ');
+        }, 1800);
+      }).catch(() => {
+        // fallback for older browsers
+        const ta = document.createElement('textarea');
+        ta.value = cmdText;
+        ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.classList.add('copied');
+        btn.innerHTML = CHECK_ICON;
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = COPY_ICON;
+          btn.setAttribute('data-tip', 'نسخ');
+        }, 1800);
+      });
+    });
+
+    card.appendChild(btn);
+  });
+}
+
+// Inject on page load
+injectCopyButtons();
+
+// ══════════════════ SEARCH ══════════════════
+const ALL_CMDS=[];
+document.querySelectorAll('.cmd-card').forEach(card=>{
+  const name=card.querySelector('.cmd-name')?.innerText||'';
+  const desc=card.querySelector('.cmd-desc')?.innerText||'';
+  ALL_CMDS.push({name,desc,html:card.outerHTML});
+});
+
+function searchCmds(q){
+  if(!q.trim()){
+    if(document.getElementById('s-search').classList.contains('active'))
+      show('overview',document.querySelector('.nav-item'));
+    return;
+  }
+  const lower=q.toLowerCase();
+  const matches=ALL_CMDS.filter(c=>c.name.toLowerCase().includes(lower)||c.desc.toLowerCase().includes(lower));
+  const resultsEl=document.getElementById('search-results');
+  const countEl=document.getElementById('search-result-count');
+  resultsEl.innerHTML=matches.length
+    ?matches.map(c=>c.html).join('')
+    :'<div style="color:var(--text3);font-size:13px;padding:20px">لا توجد أوامر تطابق "'+q+'"</div>';
+  countEl.textContent=matches.length
+    ?'تم العثور على '+matches.length+' أمر يطابق "'+q+'"'
+    :'لا نتائج لـ "'+q+'"';
+  show('search',null);
+  // Re-inject copy buttons for search results
+  injectCopyButtons();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){document.getElementById('search-input').value='';searchCmds('');}
+});
+
+// ══════════════════ CARD HOVER SHIMMER ══════════════════
+document.querySelectorAll('.cmd-card,.stat-card,.quick-card').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width)*100;
+    const y=((e.clientY-r.top)/r.height)*100;
+    card.style.setProperty('--mx',x+'%');
+    card.style.setProperty('--my',y+'%');
+  });
+});
+</script>
+</body>
+</html>

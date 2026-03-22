@@ -1,0 +1,31 @@
+{
+  "name": "north-bot",
+  "version": "1.0.0",
+  "description": "North Bot — The Ultimate All-in-One Discord Bot | Developed by Rayy @qwxlr",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node --experimental-sqlite src/index.js",
+    "deploy": "node src/deploy.js",
+    "dev": "nodemon --experimental-sqlite src/index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "@discordjs/voice": "^0.17.0",
+    "@discordjs/opus": "^0.9.0",
+    "dotenv": "^16.4.1",
+    "figlet": "^1.7.0",
+    "chalk": "^4.1.2",
+    "distube": "^5.0.0",
+    "@distube/yt-dlp": "^2.0.0",
+    "@distube/soundcloud": "^2.0.0",
+    "@distube/spotify": "^2.0.2",
+    "axios": "^1.6.7",
+    "ms": "^2.1.3",
+    "moment": "^2.30.1",
+    "node-cron": "^3.0.3",
+    "sodium-native": "^4.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
